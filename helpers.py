@@ -5,13 +5,13 @@ Helper file for holding useful functions in the scripts.
 
 """
 
-
 import numpy as np
 
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, RobustScaler
 from sklearn.impute import SimpleImputer
 from sklearn.compose import ColumnTransformer, make_column_selector
+
 
 def categorical_transformer():
     """
