@@ -1,3 +1,11 @@
+"""
+Author: TOM BUTLER
+
+Helper file for holding useful functions in the scripts.
+
+"""
+
+
 import numpy as np
 
 from sklearn.pipeline import Pipeline
@@ -5,35 +13,13 @@ from sklearn.preprocessing import OneHotEncoder, RobustScaler
 from sklearn.impute import SimpleImputer
 from sklearn.compose import ColumnTransformer, make_column_selector
 
-
-class CustomImputer(SimpleImputer):
-    """
-    Extends the imputer class to include feature names. Addresses original
-    imputer bug not filling nans
-    """
-
-    def fit(self, X, y=None):
-        self.cols = X.columns
-        return super().fit(X, y)
-
-    def transform(self, X):
-        return np.where(X.isna(), self.fill_value, X)
-
-    def get_feature_names(self):
-        return self.cols
-
-
-# preprocessing the training data to make an actually good model
-
-# preprocessing the training data to make an actually good model
-
 def categorical_transformer():
     """
     Preprocessing pipeline for categorical data
     """
     cat_transformer = Pipeline(
         steps=[
-            ("imputer", CustomImputer(strategy="constant", fill_value="missing")),
+            ("imputer", SimpleImputer(strategy="constant", fill_value="missing")),
             ("encoder", OneHotEncoder(handle_unknown="ignore"))
         ]
 
@@ -50,14 +36,14 @@ def numeric_transformer(scaling=False):
     if scaling:
         num_transformer = Pipeline(
             steps=[
-                ("imputer", CustomImputer(strategy="constant", fill_value=0)),
+                ("imputer", SimpleImputer(strategy="mean")),
                 ("scaler", RobustScaler())
             ]
         )
     else:
         num_transformer = Pipeline(
             steps=[
-                ("imputer", CustomImputer(strategy="constant", fill_value=0)),
+                ("imputer", SimpleImputer(strategy="mean")),
             ]
         )
 
