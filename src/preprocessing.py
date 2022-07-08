@@ -1,7 +1,7 @@
 """
 Author: TOM BUTLER
 
-Helper file for holding useful functions in the scripts.
+Helper file for useful preprocessing functions.
 
 """
 
@@ -70,3 +70,23 @@ def column_transformer(scaling=False):
 
 def preprocessor_pipeline(scaling=False):
     return Pipeline(steps=[("columntransformer", column_transformer(scaling))])
+
+def rebalance_dataset(X, y, ratio=1):
+    """
+    Re-balances the class ratio in the dataset.
+
+    :param X: pandas DataFrame of the feature data
+    :param y: the labels
+    :param ratio: float ratio of positive:negative cases
+    :return: pandas DataFrame of rebalanced data
+    """
+
+    # TODO: count number of positive and negative samples
+
+    # TODO: see if it is possible to use all positive in re-balance
+
+    # TODO: take appropriate number of positive/negative samples for ratio
+
+    # TODO: send back a new X, y to train on
+
+    return X, y
