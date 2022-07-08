@@ -6,6 +6,7 @@ Helper file for useful preprocessing functions.
 """
 
 import numpy as np
+from collections import Counter
 
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, RobustScaler
@@ -71,22 +72,46 @@ def column_transformer(scaling=False):
 def preprocessor_pipeline(scaling=False):
     return Pipeline(steps=[("columntransformer", column_transformer(scaling))])
 
-def rebalance_dataset(X, y, ratio=1):
+
+def rebalance_dataset(df, label, ratio=1):
     """
     Re-balances the class ratio in the dataset.
 
-    :param X: pandas DataFrame of the feature data
-    :param y: the labels
+    :param df: pandas DataFrame of the data
+    :param label: string of the label column identifier
     :param ratio: float ratio of positive:negative cases
     :return: pandas DataFrame of rebalanced data
     """
 
-    # TODO: count number of positive and negative samples
+    label_counts = Counter(df[label])
 
-    # TODO: see if it is possible to use all positive in re-balance
+    # print("Rebalancing the data ...")
 
-    # TODO: take appropriate number of positive/negative samples for ratio
+    if label_counts[1] * ratio <= label_counts[0]:
+        # keep all positive instances, drop negative instances
+        pos_sample_indices = df.query(f"{label} == 1").index.values
 
-    # TODO: send back a new X, y to train on
+        n_neg_samples = round(label_counts[1] * ratio)
+        # print("Number of negative samples required: {:,}".format(n_neg_samples))
 
-    return X, y
+        # get the number of negative samples needed
+        neg_sample_indices = df.query(f"{label} == 0").sample(n=n_neg_samples).index.values
+
+    else:
+        # keep all negative instances, start dropping positive instances
+        neg_sample_indices = df.query(f"{label} == 0").index.values
+
+        n_pos_samples = round(label_counts[0] / ratio)
+        # print("Number of positive samples required: {:,}".format(n_pos_samples))
+
+        # get the number of negative samples needed
+        pos_sample_indices = df.query(f"{label} == 1").sample(n=n_pos_samples).index.values
+
+    sample_indices = np.concatenate((pos_sample_indices, neg_sample_indices))
+
+    df_sample = df.query("index in @sample_indices").copy()
+    # label_counts = Counter(df_sample[label])
+    # print(label_counts)
+
+    return df_sample
+

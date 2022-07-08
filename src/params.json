@@ -2,6 +2,6 @@
   "model_parameters": {
     "n_estimators": 250,
     "criterion": "gini",
-    "verbose": 1
+    "verbose": 0
   }
 }

@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 
 st.set_page_config(layout="wide")
 
+
 class Dashboard:
     def __init__(self):
         self.data = None
@@ -29,6 +30,7 @@ class Dashboard:
     def plot_scores(self):
         # TODO matplotlib plot of the scores for a given model
         pass
+
 
 if __name__ == "__main__":
     dashboard = Dashboard()
